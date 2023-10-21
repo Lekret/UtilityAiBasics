@@ -18,12 +18,13 @@ public static class UtilityAi
         where TAction : IUtilityAction<TContext, TConsideration>
         where TConsideration : IUtilityConsideration<TContext>
     {
-        if (actions.Count == 0)
+        var actionsCount = actions.Count;
+        if (actionsCount == 0)
             return default;
             
         var bestScore = 0f;
         var bestActionIdx = 0;
-        for (var i = 0; i < actions.Count; i++)
+        for (var i = 0; i < actionsCount; i++)
         {
             var newScore = EvaluateActionScore<TContext, TAction, TConsideration>(actions[i], context);
             if (newScore > bestScore)
@@ -40,14 +41,15 @@ public static class UtilityAi
         where TAction : IUtilityAction<TContext, TConsideration>
         where TConsideration : IUtilityConsideration<TContext>
     {
-        var considerationsCount = action.Considerations.Count;
+        var considerations = action.Considerations;
+        var considerationsCount = considerations.Count;
         if (considerationsCount == 0)
             return 0f;
             
         var score = 1f;
         for (var i = 0; i < considerationsCount; i++)
         {
-            var considerationScore = Mathf.Clamp01(action.Considerations[i].EvaluateScore(context));
+            var considerationScore = Mathf.Clamp01(considerations[i].EvaluateScore(context));
             score *= considerationScore;
             if (score == 0f)
                 return score;
